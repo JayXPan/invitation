@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f8d9df">
+<title>乖乖约会卡 💗</title>
+<style>
+:root{
+  --bg:#f8d9df;
+  --paper:#fffaf4;
+  --pink:#ee7f9a;
+  --pink2:#f5a1b4;
+  --deep:#4f3441;
+  --shadow:#a66b7e;
+  --cream:#fff7ec;
+}
+*{box-sizing:border-box}
+html,body{min-height:100%;margin:0}
+body{
+  font-family:"Courier New","Microsoft YaHei",monospace;
+  color:var(--deep);
+  background:
+    linear-gradient(rgba(255,255,255,.17),rgba(255,255,255,.17)),
+    repeating-linear-gradient(0deg,#f9d9df 0 20px,#f3cbd4 20px 21px),
+    repeating-linear-gradient(90deg,transparent 0 20px,rgba(255,255,255,.14) 20px 21px);
+  image-rendering:pixelated;
+  overflow-x:hidden;
+}
+body::before,body::after{
+  content:"♥";
+  position:fixed;
+  z-index:0;
+  color:#ffffff66;
+  font-size:52px;
+  pointer-events:none;
+  animation:float 6s ease-in-out infinite;
+}
+body::before{top:10vh;left:6vw}
+body::after{right:8vw;bottom:9vh;animation-delay:-2.7s}
+@keyframes float{50%{transform:translateY(-12px) rotate(6deg)}}
+
+.shell{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:28px 14px 48px;
+}
+.card{
+  width:min(720px,95vw);
+  background:var(--cream);
+  border:4px solid var(--deep);
+  box-shadow:9px 9px 0 var(--shadow);
+}
+.topbar{
+  background:var(--pink2);
+  border-bottom:4px solid var(--deep);
+  padding:9px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-weight:900;
+}
+.win-dots{display:flex;gap:7px}
+.win-dots i{display:block;width:12px;height:12px;border:2px solid var(--deep);background:#fff}
+.stage{
+  min-height:510px;
+  padding:clamp(28px,6vw,54px) clamp(18px,6vw,52px);
+  display:none;
+  text-align:center;
+}
+.stage.active{display:block;animation:in .22s ease-out}
+@keyframes in{from{opacity:0;transform:translateY(8px)}}
+h1,h2{margin:0 0 15px;line-height:1.35}
+h1{font-size:clamp(28px,5.7vw,44px)}
+h2{font-size:clamp(24px,4.5vw,34px)}
+p{line-height:1.75}
+.sub{opacity:.76}
+.big-heart{
+  font-size:70px;
+  margin:4px 0 18px;
+  animation:beat 1.05s ease-in-out infinite;
+}
+@keyframes beat{50%{transform:scale(1.1)}}
+.btn{
+  border:3px solid var(--deep);
+  background:#fff;
+  color:var(--deep);
+  font:900 15px/1 "Courier New","Microsoft YaHei",monospace;
+  padding:13px 20px;
+  box-shadow:4px 4px 0 var(--deep);
+  cursor:pointer;
+  transition:.07s;
+}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 var(--deep)}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--deep)}
+.btn.primary{background:var(--pink);color:#fff}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.actions{
+  min-height:105px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+  position:relative;
+  margin-top:25px;
+}
+.no-wrap{position:relative;width:115px;height:58px}
+#noBtn{position:absolute;left:0;top:0;white-space:nowrap}
+.yay{font-size:70px;margin:8px 0}
+.activities{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  margin:25px 0 24px;
+}
+.activity{
+  background:#fff;
+  border:3px solid var(--deep);
+  box-shadow:4px 4px 0 #d08ca1;
+  padding:18px 10px;
+  min-height:100px;
+  cursor:pointer;
+  font-weight:900;
+  color:var(--deep);
+  font-family:inherit;
+}
+.activity .emoji{display:block;font-size:30px;margin-bottom:7px}
+.activity.selected{background:#ffe0e8;outline:4px solid #f59bb0}
+.locked{
+  margin:17px auto 0;
+  display:none;
+  font-weight:900;
+}
+.locked.show{display:block}
+.datebox{
+  width:min(410px,100%);
+  margin:28px auto 22px;
+  padding:20px;
+  border:3px solid var(--deep);
+  background:#fff;
+  box-shadow:5px 5px 0 #d095a4;
+}
+input[type=date]{
+  width:100%;
+  padding:13px;
+  border:3px solid var(--deep);
+  font:900 16px "Courier New","Microsoft YaHei",monospace;
+  color:var(--deep);
+  background:#fffafc;
+}
+.letter-window{
+  width:min(520px,100%);
+  margin:10px auto 24px;
+  background:#fffdf8;
+  border:4px solid var(--deep);
+  box-shadow:7px 7px 0 #bd8496;
+  text-align:left;
+}
+.letter-bar{
+  padding:8px 11px;
+  background:#f6b0bf;
+  border-bottom:4px solid var(--deep);
+  display:flex;
+  justify-content:space-between;
+  font-weight:900;
+}
+.letter-body{padding:24px;line-height:1.9}
+.letter-body p{margin:0 0 15px}
+.summary{
+  margin:18px auto 22px;
+  width:min(470px,100%);
+  padding:14px;
+  background:#fff0f4;
+  border:2px dashed var(--deep);
+  line-height:1.8;
+}
+.done{
+  margin:18px auto;
+  padding:18px;
+  border:3px solid var(--deep);
+  background:#ecfff2;
+  box-shadow:5px 5px 0 #92bca0;
+  width:min(470px,100%);
+}
+.small{font-size:12px;opacity:.68;margin-top:14px}
+@media(max-width:560px){
+  .activities{grid-template-columns:1fr}
+  .stage{min-height:540px}
+  .actions{gap:10px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <main class="card">
+    <div class="topbar">
+      <span>LOVE_CARD.EXE</span>
+      <span class="win-dots"><i></i><i></i><i></i></span>
+    </div>
+
+    <form id="loveForm" action="https://formsubmit.co/a653891932@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="💗 收到新的约会卡回复">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="回答" value="YES 💗">
+      <input type="hidden" name="想做的事情" id="activityField">
+      <input type="hidden" name="约会日期" id="dateHidden">
+
+      <section class="stage active" data-stage="1">
+        <div class="big-heart">♥</div>
+        <h1>你愿意跟我出去吗？</h1>
+        <div class="actions" id="firstActions">
+          <button class="btn primary" type="button" id="yesBtn">YES</button>
+          <div class="no-wrap">
+            <button class="btn" type="button" id="noBtn">No</button>
+          </div>
+        </div>
+        <p class="sub" id="tease"></p>
+      </section>
+
+      <section class="stage" data-stage="2">
+        <div class="yay">🎉</div>
+        <h1>耶！</h1>
+        <p>你答应了，我真的好开心。</p>
+        <button class="btn primary" type="button" data-next="3">按一下继续 →</button>
+      </section>
+
+      <section class="stage" data-stage="3">
+        <h2>你想一起做什么？</h2>
+        <p class="sub">选一个你想和我一起做的</p>
+        <div class="activities">
+          <button type="button" class="activity" data-value="一起吃饭">
+            <span class="emoji">🍜</span>一起吃饭
+          </button>
+          <button type="button" class="activity" data-value="看电影">
+            <span class="emoji">🎬</span>看电影
+          </button>
+          <button type="button" class="activity" data-value="散步＋吃甜品">
+            <span class="emoji">🍰</span>散步＋吃甜品
+          </button>
+          <button type="button" class="activity" data-value="你来安排">
+            <span class="emoji">🎁</span>你来安排
+          </button>
+        </div>
+        <div class="locked" id="lockedText">就决定是这个了 🔒</div>
+        <button class="btn primary" id="activityNext" type="button" disabled style="margin-top:20px">继续 →</button>
+      </section>
+
+      <section class="stage" data-stage="4">
+        <h2>挑一天约会吧</h2>
+        <p class="sub">选一天，安排我们的小小约会吧。</p>
+        <div class="datebox">
+          <input type="date" id="dateInput" required>
+        </div>
+        <button class="btn primary" type="button" id="dateNext">继续 →</button>
+      </section>
+
+      <section class="stage" data-stage="5">
+        <div class="letter-window">
+          <div class="letter-bar">
+            <span>❤ 情书.txt</span><span>×</span>
+          </div>
+          <div class="letter-body">
+            <p>想做这个小网页给你，是因为有些话用普通消息说出来，好像少了一点仪式感。</p>
+            <p>和你一起的时候，就算只是很普通的一天，也会变得特别一点。</p>
+            <p>所以我想认真留一个小小的位置，给下一次见面，也给我们以后更多好玩的回忆。</p>
+            <p>希望你看到这里的时候，刚好也有一点点期待。❤</p>
+            <p>亲亲，<br>想见你的人 ❤</p>
+          </div>
+        </div>
+
+        <div class="summary">
+          <strong>你选了：</strong><span id="summaryActivity">—</span><br>
+          <strong>日期：</strong><span id="summaryDate">—</span>
+        </div>
+
+        <button class="btn primary" type="submit">就这样约了！💌</button>
+        <div class="small">提交后，乖乖选的活动和日期潘嘉豪会收到！</div>
+      </section>
+    </form>
+
+    <section class="stage" data-stage="6">
+      <div class="yay">💗</div>
+      <h1>收到啦！</h1>
+      <div class="done">你的约会选择已经提交。</div>
+      <button class="btn primary" type="button" id="replayBtn">再看一次</button>
+    </section>
+  </main>
+</div>
+
+<script>
+const stages=[...document.querySelectorAll('.stage')];
+function showStage(n){
+  stages.forEach(s=>s.classList.toggle('active',s.dataset.stage==n));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('[data-next]').forEach(b=>{
+  b.addEventListener('click',()=>showStage(b.dataset.next));
+});
+
+document.getElementById('yesBtn').addEventListener('click',()=>showStage(2));
+
+const noBtn=document.getElementById('noBtn');
+const tease=document.getElementById('tease');
+let noCount=0;
+const teasing=[
+  '你确定吗？🥺',
+  '再想一下嘛…',
+  '这个按钮怎么开始躲你了 👀',
+  '它好像不太想被按到 😌'
+];
+function dodgeNo(){
+  noCount++;
+  tease.textContent=teasing[Math.min(noCount-1,teasing.length-1)];
+  const wrap=document.querySelector('.no-wrap');
+  const x=(Math.random()*120)-60;
+  const y=(Math.random()*58)-29;
+  noBtn.style.transform=`translate(${x}px,${y}px)`;
+}
+noBtn.addEventListener('mouseenter',dodgeNo);
+noBtn.addEventListener('click',dodgeNo);
+noBtn.addEventListener('touchstart',(e)=>{e.preventDefault();dodgeNo();},{passive:false});
+
+const activityField=document.getElementById('activityField');
+const acts=[...document.querySelectorAll('.activity')];
+const activityNext=document.getElementById('activityNext');
+acts.forEach(b=>{
+  b.addEventListener('click',()=>{
+    acts.forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+    activityField.value=b.dataset.value;
+    document.getElementById('lockedText').classList.add('show');
+    activityNext.disabled=false;
+  });
+});
+activityNext.addEventListener('click',()=>showStage(4));
+
+document.getElementById('dateNext').addEventListener('click',()=>{
+  const d=document.getElementById('dateInput');
+  if(!d.value){d.reportValidity();return;}
+  document.getElementById('dateHidden').value=d.value;
+  document.getElementById('summaryActivity').textContent=activityField.value;
+  document.getElementById('summaryDate').textContent=
+    new Date(d.value+'T12:00:00').toLocaleDateString('zh-CN',{
+      year:'numeric',month:'long',day:'numeric',weekday:'long'
+    });
+  showStage(5);
+});
+
+document.getElementById('loveForm').addEventListener('submit',()=>{
+  // FormSubmit handles the actual POST to the recipient.
+  // The browser will navigate to FormSubmit's response page after submission.
+});
+
+document.getElementById('replayBtn').addEventListener('click',()=>{
+  document.getElementById('loveForm').reset();
+  activityField.value='';
+  acts.forEach(x=>x.classList.remove('selected'));
+  activityNext.disabled=true;
+  document.getElementById('lockedText').classList.remove('show');
+  tease.textContent='';
+  noBtn.style.transform='';
+  showStage(1);
+});
+</script>
+</body>
+</html>
